@@ -1,0 +1,5 @@
+name: CosineLibrary
+version: 1.0
+main: com.cosine.library.CosineLibrary
+authors: [ Cosine_A ]
+description: 코사인 라이브러리
