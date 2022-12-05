@@ -9,7 +9,6 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
 import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.lang.IndexOutOfBoundsException
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.memberFunctions
@@ -34,7 +33,7 @@ abstract class CosineCommand(
 
     inner class CommandArgument(
         argument: String,
-        val annotation: Argument,
+        val annotation: CosineSubCommand,
         private val function: KFunction<Unit>
     ) {
 
@@ -90,7 +89,7 @@ abstract class CosineCommand(
     init {
         val functions = this::class.memberFunctions.filterIsInstance<KFunction<Unit>>()
         functions.forEach {
-            it.annotations.filterIsInstance<Argument>().forEach { anno -> arguments[anno.argument] = CommandArgument(anno.argument, anno, it) }
+            it.annotations.filterIsInstance<CosineSubCommand>().forEach { anno -> arguments[anno.argument] = CommandArgument(anno.argument, anno, it) }
         }
     }
 
