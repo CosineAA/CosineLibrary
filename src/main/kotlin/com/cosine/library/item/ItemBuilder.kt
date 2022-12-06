@@ -8,8 +8,8 @@ import org.bukkit.inventory.meta.ItemMeta
 
 class ItemBuilder(
     material: Material,
-    durability: Short,
-    amount: Int
+    durability: Short = 0,
+    amount: Int = 1
 ) {
 
     private val itemStack: ItemStack

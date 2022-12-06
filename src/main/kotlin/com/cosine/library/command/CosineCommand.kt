@@ -54,8 +54,8 @@ abstract class CosineCommand(
         }
 
         fun printDescription(receiver: Player) = receiver.sendMessage(description)
-        fun getArgument(sender: Player, index: Int): ArgumentAdapter<*>? {
-            return if(!sender.isOp && annotation.isOp) null
+        fun getArgument(player: Player, index: Int): ArgumentAdapter<*>? {
+            return if(!player.isOp && annotation.isOp) null
             else try {
                 params[index].first
             } catch (e: IndexOutOfBoundsException) {
@@ -63,9 +63,9 @@ abstract class CosineCommand(
             }
         }
 
-        fun runArgument(sender: Player, args: Array<String>) {
-            if (annotation.isOp  && !sender.isOp) {
-                sender.sendMessage("$prefix §f권한이 없습니다.")
+        fun runArgument(player: Player, args: Array<String>) {
+            if (annotation.isOp  && !player.isOp) {
+                player.sendMessage("$prefix §f권한이 없습니다.")
                 return
             }
 
@@ -78,10 +78,10 @@ abstract class CosineCommand(
                         null
                     }
                     if (pair.second && param == null) {
-                        sender.sendMessage("$prefix §f${pair.first.label}(을)를 입력해주세요.")
+                        player.sendMessage("$prefix §f${pair.first.label}(을)를 입력해주세요.")
                     } else arguments.add(param)
                 }
-                function.javaMethod?.invoke(this@CosineCommand, sender, *arguments.toTypedArray())
+                function.javaMethod?.invoke(this@CosineCommand, player, *arguments.toTypedArray())
             } catch (_:Exception) {}
         }
     }
@@ -98,33 +98,33 @@ abstract class CosineCommand(
         command.tabCompleter = this
     }
 
-    private fun printHelp(sender: Player) {
-        sender.sendMessage("$prefix ${command.name} - ${command.description.run { ifEmpty { "도움말" } }}")
+    private fun printHelp(player: Player) {
+        player.sendMessage("$prefix ${command.name} - ${command.description.run { ifEmpty { "도움말" } }}")
         arguments.values.forEach {
-            if(it.annotation.isOp && !sender.isOp) return@forEach
-            it.printDescription(sender)
+            if(it.annotation.isOp && !player.isOp) return@forEach
+            it.printDescription(player)
         }
     }
-    open fun runDefaultCommand(sender: Player) = printHelp(sender)
-    private fun onCommand(sender: Player, args: Array<String>) {
-        if(args.isEmpty()) runDefaultCommand(sender)
+    open fun runDefaultCommand(player: Player) = printHelp(player)
+    private fun onCommand(player: Player, args: Array<String>) {
+        if(args.isEmpty()) runDefaultCommand(player)
         else
             try {
-                arguments[args[0]]?.runArgument(sender, args.copyOfRange(1, args.size))?: printHelp(sender)
+                arguments[args[0]]?.runArgument(player, args.copyOfRange(1, args.size))?: printHelp(player)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
     }
 
-    open fun tabComplete(sender: Player, args: Array<String>): List<String>? {
+    open fun tabComplete(player: Player, args: Array<String>): List<String>? {
         return when(args.size) {
-            in 0..1 -> StringUtil.copyPartialMatches(args[0], arguments.filter { (_, v) -> !(v.annotation.isOp && !sender.isOp) }.keys.toList(), ArrayList())
+            in 0..1 -> StringUtil.copyPartialMatches(args[0], arguments.filter { (_, v) -> !(v.annotation.isOp && !player.isOp) }.keys.toList(), ArrayList())
             else -> {
                 val index = args.size - 2
                 val target = arguments[args[0]]
                 if(target == null) null
                 else {
-                    val tab = target.getArgument(sender, index)
+                    val tab = target.getArgument(player, index)
                     if(tab == null) emptyList()
                     else tab.tabCompleter.run {
                         invoke()?.run { StringUtil.copyPartialMatches(args[args.size - 1], this, ArrayList()) }
