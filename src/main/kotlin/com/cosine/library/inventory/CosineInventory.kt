@@ -7,7 +7,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
-import java.lang.Exception
 
 abstract class CosineInventory(
     private val display: String? = null,
@@ -16,19 +15,19 @@ abstract class CosineInventory(
     private val inventoryType: InventoryType = InventoryType.CHEST,
 ): InventoryHolder {
 
+    private var inv: Inventory? = null
+
     override fun getInventory(): Inventory {
-        val inventory =
-            if(inventoryType == InventoryType.CHEST) Bukkit.createInventory(this, row * 9, display)
-            else Bukkit.createInventory(this, inventoryType, display)
-
-        init(inventory)
-
-        return inventory
+        return inv ?: (
+                if (inventoryType == InventoryType.CHEST) Bukkit.createInventory(this, row * 9, display)
+                else Bukkit.createInventory(this, inventoryType, display))
+            .apply { inv = this }
     }
 
     abstract fun init(inventory: Inventory)
 
     fun openInventory(player: Player) {
+        init(inventory)
         player.openInventory(inventory)
     }
 

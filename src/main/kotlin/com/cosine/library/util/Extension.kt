@@ -19,14 +19,10 @@ fun Player.showAllPlayers(plugin: JavaPlugin) {
     }
 }
 
-fun String.applyColor() = this.replace("&", "§")
+fun String.applyColor(): String = ChatColor.translateAlternateColorCodes('&', this)
 
 fun MutableList<String>.applyColors(): MutableList<String> {
-    val replaceLore = mutableListOf<String>()
-    for (lore in this) {
-        replaceLore.add(lore.replace("&", "§"))
-    }
-    return replaceLore
+    return this.map(String::applyColor).toMutableList()
 }
 
 fun String.removeColor() = ChatColor.stripColor(this)

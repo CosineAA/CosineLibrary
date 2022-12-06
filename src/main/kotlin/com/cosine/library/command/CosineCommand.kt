@@ -44,7 +44,7 @@ abstract class CosineCommand(
         init {
             function.parameters.forEachIndexed { index, param ->
                 if (index in 0 .. 1) return@forEachIndexed
-                val name = param.type.jvmErasure.simpleName
+                val name = param.type.jvmErasure.simpleName.run { if(this == "Int") "Integer" else this }
                 val arg = ArgumentAdapter.getArgument(name)?.apply { params.add(this to !param.type.isMarkedNullable) }
                 description +=
                     if(param.type.isMarkedNullable) " ${String.format(NULLABLE_BOX, arg?.label?:"몰루")}"
@@ -110,10 +110,8 @@ abstract class CosineCommand(
         if(args.isEmpty()) runDefaultCommand(player)
         else
             try {
-                arguments[args[0]]?.runArgument(player, args.copyOfRange(1, args.size))?: printHelp(player)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+                arguments[args[0]]?.runArgument(player, args.copyOfRange(1, args.size))?: player.sendMessage("$prefix 존재하지 않는 명령어입니다.")
+            } catch (_: Exception) { }
     }
 
     open fun tabComplete(player: Player, args: Array<String>): List<String>? {

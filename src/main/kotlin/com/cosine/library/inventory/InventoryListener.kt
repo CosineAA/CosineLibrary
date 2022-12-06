@@ -9,9 +9,9 @@ class InventoryListener: Listener {
 
     @EventHandler
     fun onClick(event: InventoryClickEvent) {
+        if (event.inventory == null) return
+        if (event.currentItem == null) return
         event.view.topInventory?.holder?.apply {
-            if (event.inventory == null) return
-            if (event.currentItem == null) return
             if(this is CosineInventory) onInventoryClick(event)
         }
     }
