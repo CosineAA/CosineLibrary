@@ -18,7 +18,7 @@ import kotlin.reflect.jvm.jvmErasure
 abstract class CosineCommand(
     command: String,
     private val plugin: JavaPlugin,
-    val prefix: String = "§c§l[ CosineCore ]",
+    val prefix: String = "§c§l[ CosineLibrary ]§f",
 ): CommandExecutor, TabCompleter {
 
     companion object {
