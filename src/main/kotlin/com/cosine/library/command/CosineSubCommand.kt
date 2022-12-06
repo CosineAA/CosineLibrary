@@ -4,7 +4,7 @@ package com.cosine.library.command
 @Retention(AnnotationRetention.RUNTIME)
 annotation class CosineSubCommand(
     val argument: String,
-    val description: String,
+    val description: String = "",
     val isOp: Boolean = false
 )
 

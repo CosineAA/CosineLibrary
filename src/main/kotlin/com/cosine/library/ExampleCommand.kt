@@ -1,10 +1,6 @@
 package com.cosine.library
 
-import com.cosine.library.command.Castable
-import com.cosine.library.command.CosineSubCommand
 import com.cosine.library.command.CosineCommand
-import com.cosine.library.util.isInt
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class ExampleCommand(plugin: JavaPlugin): CosineCommand("테스트", plugin, "§6§l[ prefix ]§f") {

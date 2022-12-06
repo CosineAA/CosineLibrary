@@ -9,6 +9,14 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class CosineLibrary: JavaPlugin() {
 
+    companion object {
+        internal lateinit var plugin: CosineLibrary
+    }
+
+    override fun onLoad() {
+        plugin = this
+    }
+
     override fun onEnable() {
         logger.info("코사인 라이브러리 활성화")
         adapters()

@@ -1,4 +1,4 @@
-package com.cosine.library.util
+package com.cosine.library.extension
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
