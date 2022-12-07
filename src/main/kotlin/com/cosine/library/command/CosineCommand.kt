@@ -1,5 +1,7 @@
 package com.cosine.library.command
 
+import com.cosine.library.event.command.CosineAttemptCommandEvent
+import com.cosine.library.event.command.CosineCompleteCommandEvent
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -125,11 +127,26 @@ abstract class CosineCommand(
     open fun runDefaultCommand(player: Player) = printHelp(player)
 
     private fun onCommand(player: Player, args: Array<String>) {
-        if(args.isEmpty()) runDefaultCommand(player)
-        else
-            try {
-                arguments[args[0]]?.runArgument(player, args.copyOfRange(1, args.size))?: player.sendMessage("$prefix 존재하지 않는 명령어입니다.")
-            } catch (_: Exception) { }
+        val commandData = command.run {
+            if (args.isEmpty()) {
+                CosineCommandData(name, null, "/${name}", description)
+            } else {
+                val subCommands = args.copyOfRange(0, args.size).joinToString(" ")
+                CosineCommandData(name, args[0], "/${name} $subCommands", description)
+            }
+        }
+        val manager = plugin.server.pluginManager
+        val attempt = CosineAttemptCommandEvent(player, commandData)
+        manager.callEvent(attempt)
+        if (attempt.isCancelled) return
+        try {
+            if (!commandData.isSubCommand) {
+                runDefaultCommand(player)
+            } else {
+                arguments[args[0]]!!.runArgument(player, args.copyOfRange(1, args.size))
+            }
+            manager.callEvent(CosineCompleteCommandEvent(player, commandData))
+        } catch (_: Exception) {}
     }
 
     open fun tabComplete(player: Player, args: Array<String>): List<String>? {
