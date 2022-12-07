@@ -1,7 +1,5 @@
 package com.cosine.library.command
 
-import org.bukkit.entity.Player
-
 data class CosineCommandData(
     val command: String,
     val subCommand: String?,

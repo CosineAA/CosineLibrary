@@ -12,14 +12,14 @@ class InventoryListener: Listener {
         if (event.inventory == null) return
         if (event.currentItem == null) return
         event.view.topInventory?.holder?.apply {
-            if(this is CosineInventory) onInventoryClick(event)
+            if (this is CosineInventory) onInventoryClick(event)
         }
     }
 
     @EventHandler
     fun onClose(event: InventoryCloseEvent) {
         event.view.topInventory?.holder?.apply {
-            if(this is CosineInventory) onInventoryClose(event)
+            if (this is CosineInventory) onInventoryClose(event)
         }
     }
 
