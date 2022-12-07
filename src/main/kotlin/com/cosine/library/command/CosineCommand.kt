@@ -43,20 +43,31 @@ abstract class CosineCommand(
 
         init {
             function.parameters.forEachIndexed { index, param ->
-                if (index in 0 .. 1) return@forEachIndexed
-                val name = param.type.jvmErasure.simpleName.run { if(this == "Int") "Integer" else this }
-                val arg = ArgumentAdapter.getArgument(name)?.apply { params.add(this to !param.type.isMarkedNullable) }
+                if (index in 0 .. 1) {
+                    return@forEachIndexed
+                }
+
+                val name = param.type.jvmErasure.simpleName
+                    .run { if (this == "Int") "Integer" else this }
+                val arg = ArgumentAdapter.getArgument(name)
+                    ?.apply { params.add(this to !param.type.isMarkedNullable) }
+
                 description +=
-                    if(param.type.isMarkedNullable) " ${String.format(NULLABLE_BOX, arg?.label?:"몰루")}"
-                    else " ${String.format(NONNULL_BOX, arg?.label?:"몰루")}"
+                    if (param.type.isMarkedNullable) {
+                        " ${String.format(NULLABLE_BOX, arg?.label?:"에러")}"
+                    } else {
+                        " ${String.format(NONNULL_BOX, arg?.label?:"에러")}"
+                    }
             }
             description += " : ${annotation.description}"
         }
 
         fun printDescription(receiver: Player) = receiver.sendMessage(description)
+
         fun getArgument(player: Player, index: Int): ArgumentAdapter<*>? {
-            return if(!player.isOp && annotation.isOp) null
-            else try {
+            return if (!player.isOp && annotation.isOp) {
+                null
+            } else try {
                 params[index].first
             } catch (e: IndexOutOfBoundsException) {
                 null
@@ -72,14 +83,17 @@ abstract class CosineCommand(
             val arguments = ArrayList<Any?>()
             try {
                 params.forEachIndexed { index, pair ->
-                    val param = try {
-                        pair.first.cast(args[index])
-                    } catch (e: IndexOutOfBoundsException) {
-                        null
-                    }
+                    val param =
+                        try {
+                            pair.first.cast(args[index])
+                        } catch (e: IndexOutOfBoundsException) {
+                            null
+                        }
                     if (pair.second && param == null) {
                         player.sendMessage("$prefix §f${pair.first.label}(을)를 입력해주세요.")
-                    } else arguments.add(param)
+                    } else {
+                        arguments.add(param)
+                    }
                 }
                 function.javaMethod?.invoke(this@CosineCommand, player, *arguments.toTypedArray())
             } catch (_:Exception) {}
@@ -89,7 +103,9 @@ abstract class CosineCommand(
     init {
         val functions = this::class.memberFunctions.filterIsInstance<KFunction<Unit>>()
         functions.forEach {
-            it.annotations.filterIsInstance<CosineSubCommand>().forEach { anno -> arguments[anno.argument] = CommandArgument(anno.argument, anno, it) }
+            it.annotations.filterIsInstance<CosineSubCommand>().forEach { anno ->
+                arguments[anno.argument] = CommandArgument(anno.argument, anno, it)
+            }
         }
     }
 
@@ -101,11 +117,13 @@ abstract class CosineCommand(
     private fun printHelp(player: Player) {
         player.sendMessage("$prefix ${command.name} - ${command.description.run { ifEmpty { "도움말" } }}")
         arguments.values.forEach {
-            if(it.annotation.isOp && !player.isOp) return@forEach
+            if (it.annotation.isOp && !player.isOp) return@forEach
             it.printDescription(player)
         }
     }
+
     open fun runDefaultCommand(player: Player) = printHelp(player)
+
     private fun onCommand(player: Player, args: Array<String>) {
         if(args.isEmpty()) runDefaultCommand(player)
         else
@@ -116,16 +134,26 @@ abstract class CosineCommand(
 
     open fun tabComplete(player: Player, args: Array<String>): List<String>? {
         return when(args.size) {
-            in 0..1 -> StringUtil.copyPartialMatches(args[0], arguments.filter { (_, v) -> !(v.annotation.isOp && !player.isOp) }.keys.toList(), ArrayList())
+            in 0..1 -> {
+                val tabList = arguments.filter { (_, v) ->
+                    !(v.annotation.isOp && !player.isOp)
+                }.keys.toList()
+                StringUtil.copyPartialMatches(args[0], tabList, ArrayList())
+            }
             else -> {
                 val index = args.size - 2
                 val target = arguments[args[0]]
-                if(target == null) null
+                if (target == null) null
                 else {
                     val tab = target.getArgument(player, index)
-                    if(tab == null) emptyList()
-                    else tab.tabCompleter.run {
-                        invoke()?.run { StringUtil.copyPartialMatches(args[args.size - 1], this, ArrayList()) }
+                    if (tab == null) {
+                        emptyList()
+                    } else {
+                        tab.tabCompleter.run {
+                            invoke()?.run {
+                                StringUtil.copyPartialMatches(args[args.size - 1], this, ArrayList())
+                            }
+                        }
                     }
                 }
             }
@@ -133,13 +161,12 @@ abstract class CosineCommand(
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<String>): Boolean {
-        if(sender is Player) onCommand(sender, args)
+        if (sender is Player) onCommand(sender, args)
         return false
     }
 
     override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String>? {
-        return if(sender is Player) tabComplete(sender, args)
-        else null
+        return if (sender is Player) tabComplete(sender, args) else null
     }
 
 }
