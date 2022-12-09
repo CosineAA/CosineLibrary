@@ -2,6 +2,7 @@ package com.cosine.library.command
 
 import com.cosine.library.event.command.CosineAttemptCommandEvent
 import com.cosine.library.event.command.CosineCompleteCommandEvent
+import com.cosine.library.extension.applyColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -20,8 +21,10 @@ import kotlin.reflect.jvm.jvmErasure
 abstract class CosineCommand(
     command: String,
     private val plugin: JavaPlugin,
-    val prefix: String = "§c§l[ CosineLibrary ]§f",
+    prefix: String = "§c§l[ CosineLibrary ]§f"
 ): CommandExecutor, TabCompleter {
+
+    val prefix = prefix.applyColor()
 
     companion object {
         private const val NULLABLE_BOX = "[%s]"
@@ -41,6 +44,7 @@ abstract class CosineCommand(
 
         // second - nonnull (true)
         private val params = ArrayList<Pair<ArgumentAdapter<*>, Boolean>>()
+        // prefix /상점 생성 [이름] : 상점을 생성합니다.
         private var description = "$prefix /${command.name} $argument"
 
         init {
@@ -64,7 +68,7 @@ abstract class CosineCommand(
             description += " : ${annotation.description}"
         }
 
-        fun printDescription(receiver: Player) = receiver.sendMessage(description)
+        fun printDescription(receiver: Player) = receiver.sendMessage(description.applyColor())
 
         fun getArgument(player: Player, index: Int): ArgumentAdapter<*>? {
             return if (!player.isOp && annotation.isOp) {
@@ -78,7 +82,7 @@ abstract class CosineCommand(
 
         fun runArgument(player: Player, args: Array<String>) {
             if (annotation.isOp  && !player.isOp) {
-                player.sendMessage("$prefix §f권한이 없습니다.")
+                player.sendMessage("$prefix §f§l권한이 없습니다.")
                 return
             }
 
@@ -92,7 +96,7 @@ abstract class CosineCommand(
                             null
                         }
                     if (pair.second && param == null) {
-                        player.sendMessage("$prefix §f${pair.first.label}(을)를 입력해주세요.")
+                        player.sendMessage("$prefix §f§l${pair.first.label}(을)를 입력해주세요.")
                     } else {
                         arguments.add(param)
                     }
@@ -117,8 +121,9 @@ abstract class CosineCommand(
     }
 
     private fun printHelp(player: Player) {
-        player.sendMessage("$prefix ${command.name} - ${command.description.run { ifEmpty { "도움말" } }}")
-        arguments.values.forEach {
+        player.sendMessage("$prefix ${command.name} - ${command.description.run { ifEmpty { "도움말" } }}".applyColor())
+        player.sendMessage("")
+        arguments.values.sortedBy { it.annotation.helpPriority }.forEach {
             if (it.annotation.isOp && !player.isOp) return@forEach
             it.printDescription(player)
         }
@@ -178,7 +183,9 @@ abstract class CosineCommand(
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<String>): Boolean {
-        if (sender is Player) onCommand(sender, args)
+        if (sender is Player) {
+            onCommand(sender, args)
+        }
         return false
     }
 

@@ -19,9 +19,10 @@ class CosineLibrary: JavaPlugin() {
 
     override fun onEnable() {
         logger.info("코사인 라이브러리 활성화")
+
         adapters()
+
         server.pluginManager.registerEvents(InventoryListener(), this)
-        //CommandManager.registerCommand(ExampleCommand(this))
     }
 
     override fun onDisable() {

@@ -27,8 +27,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.bukkit:craftbukkit:1.12.2-R0.1-SNAPSHOT")
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
+    compileOnly("org.bukkit:craftbukkit:1.12.2-R0.1-SNAPSHOT")
+    implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
 }
 
