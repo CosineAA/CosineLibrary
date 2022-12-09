@@ -1,9 +1,11 @@
 package com.cosine.library.extension
 
+import com.cosine.library.CosineLibrary.Companion.plugin
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 
 fun Player.sendMessages(vararg message: String) = message.forEach { sendMessage(it) }
 
@@ -44,3 +46,5 @@ fun String.isNotInt(): Boolean {
         true
     }
 }
+
+fun later(delay: Int, block: () -> Unit) = plugin.server.scheduler.runTaskLater(plugin, block, delay.toLong())
