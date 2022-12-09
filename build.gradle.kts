@@ -24,11 +24,13 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.codemc.org/repository/maven-public/")
 }
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.bukkit:craftbukkit:1.12.2-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
 }
