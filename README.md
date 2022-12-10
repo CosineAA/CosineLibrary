@@ -6,7 +6,7 @@
 
 * Cosine_A (with HuNi_C)
 
-## API 버전
+## 버전
 
 * 1.12.2
 
