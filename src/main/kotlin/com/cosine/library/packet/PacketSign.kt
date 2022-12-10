@@ -20,6 +20,7 @@ class PacketSign(
 
     private val location = player.location
     private val position = BlockPosition(location.blockX, 0, location.blockZ)
+    private var originalBlock = Material.AIR
 
     companion object {
         private val receivers = HashMap<Player, PacketSign>()
@@ -33,8 +34,7 @@ class PacketSign(
                         event.isCancelled = true
 
                         if (sign.response(event.packet.stringArrays.read(0)))
-                            // 안지워진거 같음
-                            player.sendBlockChange(sign.position.toLocation(player.world), Material.AIR, 0)
+                            player.sendBlockChange(sign.position.toLocation(player.world), sign.originalBlock, 0)
                         else
                             later(1) { sign.open() }
                     }
@@ -43,7 +43,10 @@ class PacketSign(
     }
 
     fun open() {
-        player.sendBlockChange(position.toLocation(location.world), Material.SIGN_POST, 0)
+        position.toLocation(location.world).apply {
+            originalBlock = block.type
+            player.sendBlockChange(this, Material.SIGN_POST, 0)
+        }
         val manager = ProtocolLibrary.getProtocolManager()
         val signEditorPacket = manager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR)
         val signDataPacket = manager.createPacket(PacketType.Play.Server.TILE_ENTITY_DATA)
