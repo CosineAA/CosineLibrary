@@ -18,5 +18,5 @@
 * 유용한 여러 확장함수
 * 아머스탠드 패킷
 * 표지판 패킷
-* MariaDB 커넥터
+* MariaDB(MySQL) 커넥터
 * Config 생성
