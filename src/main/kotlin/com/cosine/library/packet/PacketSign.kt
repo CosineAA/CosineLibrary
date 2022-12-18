@@ -8,6 +8,7 @@ import com.comphenix.protocol.wrappers.BlockPosition
 import com.comphenix.protocol.wrappers.nbt.NbtCompound
 import com.cosine.library.CosineLibrary.Companion.plugin
 import com.cosine.library.extension.later
+import net.minecraft.server.v1_12_R1.PacketPlayOutOpenSignEditor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.stream.IntStream
@@ -26,7 +27,7 @@ class PacketSign(
         private val receivers = HashMap<Player, PacketSign>()
         fun listener() {
             ProtocolLibrary.getProtocolManager()
-                .addPacketListener(object: PacketAdapter(plugin, PacketType.Play.Client.UPDATE_SIGN) {
+                .addPacketListener(object : PacketAdapter(plugin, PacketType.Play.Client.UPDATE_SIGN) {
                     override fun onPacketReceiving(event: PacketEvent) {
                         val player = event.player
                         val sign = receivers.remove(player) ?: return
