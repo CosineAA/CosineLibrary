@@ -55,6 +55,7 @@ class ItemBuilder(
         return itemStack
     }
 }
+
 fun ItemStack.setSkull(uuid: UUID) {
     getOfflinePlayer(uuid) {
         val meta = this.itemMeta as SkullMeta

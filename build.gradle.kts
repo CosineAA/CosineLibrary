@@ -32,6 +32,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
 
 tasks {

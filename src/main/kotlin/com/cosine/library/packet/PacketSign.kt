@@ -8,7 +8,9 @@ import com.comphenix.protocol.wrappers.BlockPosition
 import com.comphenix.protocol.wrappers.nbt.NbtCompound
 import com.cosine.library.CosineLibrary.Companion.plugin
 import com.cosine.library.extension.later
+import net.minecraft.server.v1_12_R1.PacketPlayInUpdateSign
 import net.minecraft.server.v1_12_R1.PacketPlayOutOpenSignEditor
+import net.minecraft.server.v1_12_R1.PacketPlayOutTileEntityData
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.stream.IntStream

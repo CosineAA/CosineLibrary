@@ -82,7 +82,7 @@ abstract class CosineCommand(
 
         fun runArgument(player: Player, args: Array<String>) {
             if (annotation.isOp  && !player.isOp) {
-                player.sendMessage("$prefix §f§l권한이 없습니다.")
+                player.sendMessage("$prefix 권한이 없습니다.")
                 return
             }
 
@@ -96,7 +96,7 @@ abstract class CosineCommand(
                             null
                         }
                     if (pair.second && param == null) {
-                        player.sendMessage("$prefix §f§l${pair.first.label}(을)를 입력해주세요.")
+                        player.sendMessage("$prefix ${pair.first.label}(을)를 입력해주세요.")
                     } else {
                         arguments.add(param)
                     }
